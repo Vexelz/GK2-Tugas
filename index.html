@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Kelompok 6 Grafkom</title>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
@@ -30,7 +30,11 @@
 
         const createScene = function () {
             const scene = new BABYLON.Scene(engine);
-            scene.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1); // gelap biar pencahayaan lebih kontras
+            scene.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+
+            // Image processing untuk shading lebih tajam dan sinematik
+            scene.imageProcessingConfiguration.contrast = 1.2;
+            scene.imageProcessingConfiguration.exposure = 1.1;
 
             // Kamera
             const camera = new BABYLON.ArcRotateCamera("camera", Math.PI / 2, Math.PI / 2.5, 5, BABYLON.Vector3.Zero(), scene);
@@ -50,17 +54,19 @@
             // Pencahayaan directional
             const dirLight = new BABYLON.DirectionalLight("dirLight", new BABYLON.Vector3(-1, -2, -1), scene);
             dirLight.position = new BABYLON.Vector3(5, 10, 5);
-            dirLight.intensity = 1.5;
+            dirLight.intensity = 2.0;
 
-            // Bayangan
-            const shadowGenerator = new BABYLON.ShadowGenerator(1024, dirLight);
-            shadowGenerator.useExponentialShadowMap = true;
+            // Shadow Generator dengan efek soft shadow
+            const shadowGenerator = new BABYLON.ShadowGenerator(2048, dirLight);
+            shadowGenerator.useBlurExponentialShadowMap = true;
+            shadowGenerator.blurKernel = 32;         // Kontrol kelembutan bayangan
+            shadowGenerator.depthScale = 100;        // Supaya kedalaman bayangan terasa natural
+            shadowGenerator.darkness = 0.3;          // Seberapa gelap bayangannya
 
             // Load model dari folder lokal
             BABYLON.SceneLoader.Append("models/", "model.gltf", scene, function (scene) {
                 console.log("Model berhasil dimuat!");
-                
-                // Asumsikan model pertama adalah mesh utama
+
                 scene.meshes.forEach(mesh => {
                     if (mesh.name !== "ground") {
                         mesh.receiveShadows = true;
