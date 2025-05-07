@@ -129,6 +129,8 @@
                 if (keys["s"]) parrotMesh.position.z += speed;
                 if (keys["d"]) parrotMesh.position.x -= speed;
                 if (keys["a"]) parrotMesh.position.x += speed;
+                if (keys[" "]) parrotMesh.position.y += speed; // Space naik
+                if (keys["e"]) parrotMesh.position.y -= speed; // E turun
             }
             scene.render();
         });
